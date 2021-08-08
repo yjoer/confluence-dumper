@@ -345,7 +345,7 @@ def fetch_page_recursively(page_id, folder_path, download_folder, html_template,
         utils.write_html_2_file(file_path, page_title, page_content.decode("utf8"), html_template)
 
         # Save another file with page id which forwards to the original one
-        id_file_path = '%s/%s.html' % (folder_path, page_id)
+        id_file_path = '%s/pages/%s.html' % (folder_path, page_id)
         id_file_page_title = 'Forward to page %s' % page_title
         original_file_link = utils.encode_url(utils.sanitize_for_filename(file_name))
         id_file_page_content = settings.HTML_FORWARD_MESSAGE % (original_file_link, page_title)
