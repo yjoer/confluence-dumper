@@ -73,7 +73,7 @@ def http_download_binary_file(request_url, file_path, auth=None, headers=None, v
             try:
                 shutil.copyfileobj(response.raw, downloaded_file)
             except:
-                downloaded_file.write("could not copy file")
+                print("Could not copy file: %s" % request_url)
     else:
         raise ConfluenceException('Error %s: %s on requesting %s' % (response.status_code, response.reason,
                                                                      request_url))
