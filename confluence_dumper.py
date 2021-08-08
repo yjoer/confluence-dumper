@@ -267,7 +267,7 @@ def create_html_attachment_index(attachments):
             relative_file_path = utils.encode_url(relative_file_path)
             html_content += '\t<li><a href="%s">%s</a></li>\n' % (relative_file_path, attachment['file_name'])
         html_content += '</ul>\n'
-    return html_content
+    return html_content.encode("utf8")
 
 
 def fetch_page_recursively(page_id, folder_path, download_folder, html_template, depth=0,
