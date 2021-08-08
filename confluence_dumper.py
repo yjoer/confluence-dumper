@@ -350,7 +350,7 @@ def fetch_page_recursively(page_id, folder_path, download_folder, html_template,
         id_file_page_title = 'Forward to page %s' % page_title
         original_file_link = utils.encode_url(utils.sanitize_for_filename(file_name))
         id_file_page_content = settings.HTML_FORWARD_MESSAGE % (original_file_link, page_title)
-        id_file_forward_header = '<meta http-equiv="refresh" content="0; url=%s" />' % original_file_link
+        id_file_forward_header = '<meta http-equiv="refresh" content="0; url=../%s" />' % original_file_link
         utils.write_html_2_file(id_file_path, id_file_page_title, id_file_page_content, html_template,
                                 additional_headers=[id_file_forward_header])
 
