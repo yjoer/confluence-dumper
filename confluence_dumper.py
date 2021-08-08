@@ -342,7 +342,7 @@ def fetch_page_recursively(page_id, folder_path, download_folder, html_template,
                                               depth=depth+1)
         file_path = '%s/%s' % (folder_path, file_name)
         page_content += create_html_attachment_index(path_collection['child_attachments'])
-        utils.write_html_2_file(file_path, page_title, page_content, html_template)
+        utils.write_html_2_file(file_path, page_title, page_content.decode("utf8"), html_template)
 
         # Save another file with page id which forwards to the original one
         id_file_path = '%s/%s.html' % (folder_path, page_id)
