@@ -14,8 +14,10 @@ import requests
 import shutil
 import re
 import urllib
+import urllib3
 
 
+urllib3.disable_warnings()
 class ConfluenceException(Exception):
     """ Exception for Confluence export issues """
     def __init__(self, message):
