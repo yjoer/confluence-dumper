@@ -11,6 +11,8 @@
 # See the LICENSE.md file in the top-level directory.
 
 import requests
+from requests.adapters import HTTPAdapter
+
 import shutil
 import re
 import urllib
@@ -35,7 +37,11 @@ def http_get(request_url, auth=None, headers=None, verify_peer_certificate=True,
     :returns: JSON response.
     :raises: ConfluenceException in the case of the server does not answer HTTP code 200.
     """
-    response = requests.get(request_url, auth=auth, headers=headers, verify=verify_peer_certificate, proxies=proxies)
+    http = requests.Session()
+    http.mount('http://', HTTPAdapter(max_retries=10))
+    http.mount('https://', HTTPAdapter(max_retries=10))
+
+    response = http.get(request_url, auth=auth, headers=headers, verify=verify_peer_certificate, proxies=proxies)
     if 200 == response.status_code:
         return response.json()
     else:
@@ -55,7 +61,11 @@ def http_download_binary_file(request_url, file_path, auth=None, headers=None, v
     :param proxies: (optional) Dictionary mapping protocol to the URL of the proxy.
     :raises: ConfluenceException in the case of the server does not answer with HTTP code 200.
     """
-    response = requests.get(request_url, stream=True, auth=auth, headers=headers, verify=verify_peer_certificate,
+    http = requests.Session()
+    http.mount('http://', HTTPAdapter(max_retries=10))
+    http.mount('https://', HTTPAdapter(max_retries=10))
+
+    response = http.get(request_url, stream=True, auth=auth, headers=headers, verify=verify_peer_certificate,
                             proxies=proxies)
     if 200 == response.status_code:
         with open(file_path, 'wb') as downloaded_file:
