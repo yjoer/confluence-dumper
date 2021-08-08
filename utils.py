@@ -76,8 +76,8 @@ def write_2_file(path, content):
     :param content: String content to persist.
     """
     try:
-        with open(path, 'w') as the_file:
-            the_file.write(content.encode('utf8'))
+        with open(path, 'w', encoding='utf8') as the_file:
+            the_file.write(content)
     except:
         print("File could not be written")
 
