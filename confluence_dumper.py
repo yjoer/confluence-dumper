@@ -428,9 +428,8 @@ def main():
     # Welcome output
     print_welcome_output()
     # Delete old export
-    if os.path.exists(settings.EXPORT_FOLDER):
-        shutil.rmtree(settings.EXPORT_FOLDER)
-    os.makedirs(settings.EXPORT_FOLDER)
+    if not os.path.exists(settings.EXPORT_FOLDER):
+        os.makedirs(settings.EXPORT_FOLDER)
 
     # Read HTML template
     template_file = open(settings.TEMPLATE_FILE)
