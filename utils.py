@@ -99,7 +99,7 @@ def write_html_2_file(path, title, content, html_template, additional_headers=No
     # Note: One backslash has to be escaped with two avoid that backslashes are interpreted as escape chars
     replacements = {'title': title, 'content': content, 'additional_headers': additional_html_headers}
 
-    for placeholder, replacement in replacements.iteritems():
+    for placeholder, replacement in replacements.items():
         regex_placeholder = r'{%\s*' + placeholder + r'\s*%\}'
         try:
             html_content = re.sub(regex_placeholder, replacement.replace('\\', '\\\\'), html_content,
