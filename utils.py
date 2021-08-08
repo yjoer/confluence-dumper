@@ -126,7 +126,7 @@ def decode_url(encoded_url):
     :param encoded_url: Encoded URL.
     :returns: Decoded URL.
     """
-    return urllib.unquote(encoded_url.encode('utf8')).decode('utf8')
+    return urllib.parse.unquote(encoded_url)
 
 
 def encode_url(decoded_url):
@@ -135,7 +135,7 @@ def encode_url(decoded_url):
     :param decoded_url: Decoded URL.
     :returns: Encoded URL.
     """
-    return urllib.quote(decoded_url.encode('utf8')).encode('utf8')
+    return urllib.parse.quote(decoded_url)
 
 
 def is_file_format(file_name, file_extensions):
