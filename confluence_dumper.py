@@ -19,6 +19,7 @@ import sys
 import codecs
 
 import os
+import json
 import shutil
 from lxml import html
 from lxml.etree import XMLSyntaxError
@@ -427,6 +428,7 @@ def main():
 
     # Welcome output
     print_welcome_output()
+
     # Delete old export
     if not os.path.exists(settings.EXPORT_FOLDER):
         os.makedirs(settings.EXPORT_FOLDER)
@@ -436,8 +438,12 @@ def main():
     html_template = template_file.read()
 
     # Fetch all spaces if spaces were not configured via settings
+    cached_spaces_file = "export/cached_spaces.json"
+
     if len(settings.SPACES_TO_EXPORT) > 0:
         spaces_to_export = settings.SPACES_TO_EXPORT
+    elif os.path.exists(cached_spaces_file):
+        spaces_to_export = json.load(open(cached_spaces_file, "rb"))
     else:
         spaces_to_export = []
         page_url = '%s/rest/api/space?limit=250' % settings.CONFLUENCE_BASE_URL
@@ -454,6 +460,9 @@ def main():
             else:
                 page_url = None
 
+        with open(cached_spaces_file, 'w') as f:
+            json.dump(spaces_to_export, f, indent=2)
+
     print('Exporting %d space(s): %s\n' % (len(spaces_to_export), ', '.join(spaces_to_export)))
 
     # Export spaces
@@ -467,9 +476,17 @@ def main():
         space_folder_name = provide_unique_file_name(duplicate_space_names, space_matching, space, is_folder=True)
         space_folder = '%s/%s' % (settings.EXPORT_FOLDER, space_folder_name)
         try:
-            os.makedirs(space_folder)
             download_folder = '%s/%s' % (space_folder, settings.DOWNLOAD_SUB_FOLDER)
-            os.makedirs(download_folder)
+            page_folder = '%s/%s' % (space_folder, "pages")
+
+            if not os.path.exists(space_folder):
+                os.makedirs(space_folder)
+
+            if not os.path.exists(download_folder):
+                os.makedirs(download_folder)
+
+            if not os.path.exists(page_folder):
+                os.makedirs(page_folder)
 
             space_url = '%s/rest/api/space/%s?expand=homepage' % (settings.CONFLUENCE_BASE_URL, space)
             response = utils.http_get(space_url, auth=settings.HTTP_AUTHENTICATION,
