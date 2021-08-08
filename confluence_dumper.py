@@ -118,7 +118,7 @@ def handle_html_references(html_content, page_duplicate_file_names, page_file_ma
     :returns: Fixed HTML content.
     """
     if html_content == "":
-        return ""
+        return b""
     try:
         html_tree = html.fromstring(html_content)
     except XMLSyntaxError:
