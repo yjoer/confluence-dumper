@@ -316,7 +316,7 @@ def fetch_page_recursively(page_id, folder_path, download_folder, html_template,
 
         # Download attachments of this page
         # TODO: Outsource/Abstract the following two while loops because of much duplicate code.
-        page_url = '%s/rest/api/content/%s/child/attachment?limit=25' % (settings.CONFLUENCE_BASE_URL, page_id)
+        page_url = '%s/rest/api/content/%s/child/attachment?limit=250' % (settings.CONFLUENCE_BASE_URL, page_id)
         counter = 0
         while page_url:
             response = utils.http_get(page_url, auth=settings.HTTP_AUTHENTICATION, headers=settings.HTTP_CUSTOM_HEADERS,
@@ -354,7 +354,7 @@ def fetch_page_recursively(page_id, folder_path, download_folder, html_template,
                                 additional_headers=[id_file_forward_header])
 
         # Iterate through all child pages
-        page_url = '%s/rest/api/content/%s/child/page?limit=25' % (settings.CONFLUENCE_BASE_URL, page_id)
+        page_url = '%s/rest/api/content/%s/child/page?limit=250' % (settings.CONFLUENCE_BASE_URL, page_id)
         counter = 0
         while page_url:
             response = utils.http_get(page_url, auth=settings.HTTP_AUTHENTICATION, headers=settings.HTTP_CUSTOM_HEADERS,
@@ -441,7 +441,7 @@ def main():
         spaces_to_export = settings.SPACES_TO_EXPORT
     else:
         spaces_to_export = []
-        page_url = '%s/rest/api/space?limit=25' % settings.CONFLUENCE_BASE_URL
+        page_url = '%s/rest/api/space?limit=250' % settings.CONFLUENCE_BASE_URL
         while page_url:
             response = utils.http_get(page_url, auth=settings.HTTP_AUTHENTICATION, headers=settings.HTTP_CUSTOM_HEADERS,
                                       verify_peer_certificate=settings.VERIFY_PEER_CERTIFICATE,
