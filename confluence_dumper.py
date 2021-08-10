@@ -20,7 +20,7 @@ import codecs
 
 import os
 import json
-import shutil
+import redis
 from lxml import html
 from lxml.etree import XMLSyntaxError
 
@@ -465,12 +465,27 @@ def main():
 
     print('Exporting %d space(s): %s\n' % (len(spaces_to_export), ', '.join(spaces_to_export)))
 
+    r = redis.Redis(host="127.0.0.1", port=6379, db=0, decode_responses=True)
+
     # Export spaces
+    exporting_spaces_key = "exporting_spaces"
+    exported_spaces_key = "exported_spaces"
+
     space_counter = 0
     duplicate_space_names = {}
     space_matching = {}
     for space in spaces_to_export:
-        space_counter += 1
+        # Exclude exporting and exported spaces in multiple processes
+        exporting_spaces = r.lrange(exporting_spaces_key, 0, -1)
+        exported_spaces = r.lrange(exported_spaces_key, 0, -1)
+
+        if space in exporting_spaces or space in exported_spaces:
+            continue
+
+        space_counter = r.llen(exporting_spaces_key) + r.llen(exported_spaces_key)
+
+        # Save currently exporting space name
+        r.lpush("exporting_spaces", space)
 
         # Create folders for this space
         space_folder_name = provide_unique_file_name(duplicate_space_names, space_matching, space, is_folder=True)
@@ -510,6 +525,12 @@ def main():
                 space_index_title = 'Index of Space %s (%s)' % (space_name, space)
                 space_index_content = create_html_index(path_collection)
                 utils.write_html_2_file(space_index_path, space_index_title, space_index_content, html_template)
+
+            # Add exported spaces specific to a process number
+            r.lpush(exported_spaces_key, space)
+
+            # Remove the space from exporting list
+            r.lrem(exporting_spaces_key, 0, space)
         except utils.ConfluenceException as e:
             error_print('ERROR: %s' % e)
         except OSError:
