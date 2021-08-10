@@ -533,9 +533,9 @@ def main():
             r.lrem(exporting_spaces_key, 0, space)
         except utils.ConfluenceException as e:
             error_print('ERROR: %s' % e)
-        except OSError:
-            print('WARNING: The space %s has been exported already. Maybe you mentioned it twice in the settings'
-                  % space)
+        except OSError as e:
+            print('OSError when downloading space %s', space)
+            print(e)
 
     # Finished output
     print_finished_output()
