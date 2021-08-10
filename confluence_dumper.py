@@ -427,7 +427,7 @@ def main():
     #sys.stderr = codecs.getwriter('utf-8')(sys.stderr)
 
     # Welcome output
-    print_welcome_output()
+    # print_welcome_output()
 
     # Delete old export
     if not os.path.exists(settings.EXPORT_FOLDER):
@@ -463,7 +463,7 @@ def main():
         with open(cached_spaces_file, 'w') as f:
             json.dump(spaces_to_export, f, indent=2)
 
-    print('Exporting %d space(s): %s\n' % (len(spaces_to_export), ', '.join(spaces_to_export)))
+    print('Exporting %d space(s)' % len(spaces_to_export))
 
     r = redis.Redis(host="127.0.0.1", port=6379, db=0, decode_responses=True)
 
