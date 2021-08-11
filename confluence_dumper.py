@@ -528,10 +528,10 @@ def main():
         except utils.ConfluenceException as e:
             error_print('ERROR: %s' % e)
         except OSError as e:
-            print('OSError when downloading space %s', space)
-            print(e)
+            error_print('OSError when downloading space %s', space)
+            error_print(e)
         except Exception as e:
-            print(e)
+            error_print(e)
 
     # Finished output
     print_finished_output()
