@@ -530,6 +530,8 @@ def main():
         except OSError as e:
             print('OSError when downloading space %s', space)
             print(e)
+        except Exception as e:
+            print(e)
 
     # Finished output
     print_finished_output()
