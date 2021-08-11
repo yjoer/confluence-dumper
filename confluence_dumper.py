@@ -199,17 +199,11 @@ def download_file(clean_url, download_folder, downloaded_file_name, depth=0, err
     if not os.path.exists(downloaded_file_path):
         absolute_download_url = '%s%s' % (settings.CONFLUENCE_BASE_URL, clean_url)
         print('%sDOWNLOAD: %s' % ('\t'*(depth+1), downloaded_file_name))
-        try:
-            utils.http_download_binary_file(absolute_download_url, downloaded_file_path,
-                                            auth=settings.HTTP_AUTHENTICATION, headers=settings.HTTP_CUSTOM_HEADERS,
-                                            verify_peer_certificate=settings.VERIFY_PEER_CERTIFICATE,
-                                            proxies=settings.HTTP_PROXIES)
 
-        except utils.ConfluenceException as e:
-            if error_output:
-                error_print('%sERROR: %s' % ('\t'*(depth+2), e))
-            else:
-                print('%sWARNING: %s' % ('\t'*(depth+2), e))
+        utils.http_download_binary_file(absolute_download_url, downloaded_file_path,
+                                        auth=settings.HTTP_AUTHENTICATION, headers=settings.HTTP_CUSTOM_HEADERS,
+                                        verify_peer_certificate=settings.VERIFY_PEER_CERTIFICATE,
+                                        proxies=settings.HTTP_PROXIES)
 
     return downloaded_file_path
 
