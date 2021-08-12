@@ -13,6 +13,7 @@
 import requests
 from requests.adapters import HTTPAdapter
 
+import sys
 import shutil
 import re
 import urllib
@@ -24,6 +25,15 @@ class ConfluenceException(Exception):
     """ Exception for Confluence export issues """
     def __init__(self, message):
         super(ConfluenceException, self).__init__(message)
+
+
+def error_print(*args, **kwargs):
+    """ Wrapper for the print function which leads to stderr outputs.
+
+    :param args: Not necessary.
+    :param kwargs: Not necessary.
+    """
+    print(*args, file=sys.stderr, **kwargs)
 
 
 def http_get(request_url, auth=None, headers=None, verify_peer_certificate=True, proxies=None):
@@ -73,7 +83,10 @@ def http_download_binary_file(request_url, file_path, auth=None, headers=None, v
             try:
                 shutil.copyfileobj(response.raw, downloaded_file)
             except:
-                print("Could not copy file: %s" % request_url)
+                error_print("Could not copy file: %s" % request_url)
+    elif 404 == response.status_code:
+        error_print('Error %s: %s on requesting %s' % (response.status_code, response.reason,
+                                                       request_url))
     else:
         raise ConfluenceException('Error %s: %s on requesting %s' % (response.status_code, response.reason,
                                                                      request_url))
