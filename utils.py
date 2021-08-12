@@ -12,6 +12,7 @@
 
 import requests
 from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 import sys
 import shutil
@@ -48,8 +49,15 @@ def http_get(request_url, auth=None, headers=None, verify_peer_certificate=True,
     :raises: ConfluenceException in the case of the server does not answer HTTP code 200.
     """
     http = requests.Session()
-    http.mount('http://', HTTPAdapter(max_retries=10))
-    http.mount('https://', HTTPAdapter(max_retries=10))
+
+    retry_strategy = Retry(
+        total=5,
+        status_forcelist=[400, 401, 500, 503],
+        backoff_factor=1
+    )
+
+    http.mount('http://', HTTPAdapter(max_retries=retry_strategy))
+    http.mount('https://', HTTPAdapter(max_retries=retry_strategy))
 
     response = http.get(request_url, auth=auth, headers=headers, verify=verify_peer_certificate, proxies=proxies)
     if 200 == response.status_code:
@@ -72,8 +80,15 @@ def http_download_binary_file(request_url, file_path, auth=None, headers=None, v
     :raises: ConfluenceException in the case of the server does not answer with HTTP code 200.
     """
     http = requests.Session()
-    http.mount('http://', HTTPAdapter(max_retries=10))
-    http.mount('https://', HTTPAdapter(max_retries=10))
+
+    retry_strategy = Retry(
+        total=5,
+        status_forcelist=[400, 401, 500, 503],
+        backoff_factor=1
+    )
+
+    http.mount('http://', HTTPAdapter(max_retries=retry_strategy))
+    http.mount('https://', HTTPAdapter(max_retries=retry_strategy))
 
     response = http.get(request_url, stream=True, auth=auth, headers=headers, verify=verify_peer_certificate,
                             proxies=proxies)
