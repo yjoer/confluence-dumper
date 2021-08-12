@@ -54,12 +54,24 @@ def derive_downloaded_file_name(download_url):
     """
     if '/download/' in download_url:
         download_url_parts = download_url.split('/')
-        download_page_id = download_url_parts[3]
-        download_file_type = download_url_parts[2]
+
+        try:
+            download_page_id = download_url_parts[3]
+        except IndexError:
+            download_page_id = "unknown"
+
+        try:
+            download_file_type = download_url_parts[2]
+        except IndexError:
+            download_file_type = "unknown"
 
         # Remove GET parameters
-        last_question_mark_index = download_url_parts[4].rfind('?')
-        download_original_file_name = download_url_parts[4][:last_question_mark_index]
+        last_question_mark_index = download_url_parts[-1].rfind('?')
+
+        if (last_question_mark_index != -1):
+            download_original_file_name = download_url_parts[-1][:last_question_mark_index]
+        else:
+            download_original_file_name = download_url_parts[-1]
 
         return '%s_%s_%s' % (download_page_id, download_file_type, download_original_file_name)
     elif '/rest/documentConversion/latest/conversion/thumbnail/' in download_url:
