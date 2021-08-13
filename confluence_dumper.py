@@ -538,12 +538,11 @@ def main():
             # Remove the space from exporting list
             r.lrem(exporting_spaces_key, 0, space)
         except utils.ConfluenceException as e:
+            error_print('Skipping space %s' % space)
             error_print('ERROR: %s' % e)
-        except OSError as e:
-            error_print('OSError when downloading space %s', space)
-            error_print(e)
-        except Exception as e:
-            error_print(e)
+        except:
+            error_print('Skipping space %s' % space)
+            error_print(sys.exc_info())
 
     # Finished output
     print_finished_output()
