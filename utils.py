@@ -13,6 +13,7 @@
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from requests.exceptions import RetryError
 
 import sys
 import shutil
@@ -90,23 +91,26 @@ def http_download_binary_file(request_url, file_path, auth=None, headers=None, v
     http.mount('http://', HTTPAdapter(max_retries=retry_strategy))
     http.mount('https://', HTTPAdapter(max_retries=retry_strategy))
 
-    response = http.get(request_url, stream=True, auth=auth, headers=headers, verify=verify_peer_certificate,
+    try:
+        response = http.get(request_url, stream=True, auth=auth, headers=headers, verify=verify_peer_certificate,
                             proxies=proxies)
-    if 200 == response.status_code:
-        with open(file_path, 'wb') as downloaded_file:
-            response.raw.decode_content = True
-            try:
-                shutil.copyfileobj(response.raw, downloaded_file)
-            except:
-                error_print("Could not copy file: %s" % request_url)
-    elif 404 == response.status_code or (
-        500 == response.status_code and "download/thumbnail" in request_url
-    ):
-        error_print('Error %s: %s on requesting %s' % (response.status_code, response.reason,
-                                                       request_url))
-    else:
-        raise ConfluenceException('Error %s: %s on requesting %s' % (response.status_code, response.reason,
-                                                                     request_url))
+
+        if 200 == response.status_code:
+            with open(file_path, 'wb') as downloaded_file:
+                response.raw.decode_content = True
+                try:
+                    shutil.copyfileobj(response.raw, downloaded_file)
+                except:
+                    error_print("Could not copy file: %s" % request_url)
+        elif 404 == response.status_code:
+            error_print('Error %s: %s on requesting %s' % (response.status_code, response.reason,
+                                                           request_url))
+        else:
+            raise ConfluenceException('Error %s: %s on requesting %s' % (response.status_code, response.reason,
+                                                                         request_url))
+    except RetryError as e:
+        if ("download/thumbnail" not in request_url):
+            raise e
 
 
 def write_2_file(path, content):
