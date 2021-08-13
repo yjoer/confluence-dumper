@@ -99,7 +99,9 @@ def http_download_binary_file(request_url, file_path, auth=None, headers=None, v
                 shutil.copyfileobj(response.raw, downloaded_file)
             except:
                 error_print("Could not copy file: %s" % request_url)
-    elif 404 == response.status_code:
+    elif 404 == response.status_code or (
+        500 == response.status_code and "download/thumbnail" in request_url
+    ):
         error_print('Error %s: %s on requesting %s' % (response.status_code, response.reason,
                                                        request_url))
     else:
