@@ -28,6 +28,9 @@ class ConfluenceException(Exception):
     def __init__(self, message):
         super(ConfluenceException, self).__init__(message)
 
+class NotFoundException(Exception):
+    def __init__(self, message):
+        super(NotFoundException, self).__init__(message)
 
 def error_print(*args, **kwargs):
     """ Wrapper for the print function which leads to stderr outputs.
@@ -63,6 +66,9 @@ def http_get(request_url, auth=None, headers=None, verify_peer_certificate=True,
     response = http.get(request_url, auth=auth, headers=headers, verify=verify_peer_certificate, proxies=proxies)
     if 200 == response.status_code:
         return response.json()
+    elif 404 == response.status_code:
+        raise NotFoundException('Error %s: %s on requesting %s' % (response.status_code, response.reason,
+                                                                   request_url))
     else:
         raise ConfluenceException('Error %s: %s on requesting %s' % (response.status_code, response.reason,
                                                                      request_url))

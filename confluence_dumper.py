@@ -382,8 +382,8 @@ def fetch_page_recursively(page_id, folder_path, download_folder, html_template,
                 page_url = None
         return path_collection
 
-    except utils.ConfluenceException as e:
-        error_print('%sERROR: %s' % ('\t'*(depth+1), e))
+    except utils.NotFoundException as e:
+        error_print(e)
         return None
 
 
