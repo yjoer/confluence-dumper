@@ -482,16 +482,13 @@ def main():
     space_matching = {}
     for space in spaces_to_export:
         # Exclude exporting and exported spaces in multiple processes
-        exporting_spaces = r.lrange(exporting_spaces_key, 0, -1)
-        exported_spaces = r.lrange(exported_spaces_key, 0, -1)
-
-        if space in exporting_spaces or space in exported_spaces:
+        if r.sismember(exporting_spaces_key, space) or r.sismember(exported_spaces_key, space):
             continue
 
-        space_counter = r.llen(exporting_spaces_key) + r.llen(exported_spaces_key)
+        space_counter = r.scard(exporting_spaces_key) + r.scard(exported_spaces_key)
 
         # Save currently exporting space name
-        r.lpush("exporting_spaces", space)
+        r.sadd(exporting_spaces_key, space)
 
         # Create folders for this space
         space_folder_name = provide_unique_file_name(duplicate_space_names, space_matching, space, is_folder=True)
@@ -533,10 +530,10 @@ def main():
                 utils.write_html_2_file(space_index_path, space_index_title, space_index_content, html_template)
 
             # Add exported spaces specific to a process number
-            r.lpush(exported_spaces_key, space)
+            r.sadd(exported_spaces_key, space)
 
             # Remove the space from exporting list
-            r.lrem(exporting_spaces_key, 0, space)
+            r.srem(exporting_spaces_key, space)
         except utils.ConfluenceException as e:
             error_print('Skipping space %s' % space)
             error_print('ERROR: %s' % e)
