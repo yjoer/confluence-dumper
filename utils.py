@@ -115,8 +115,9 @@ def http_download_binary_file(request_url, file_path, auth=None, headers=None, v
             raise ConfluenceException('Error %s: %s on requesting %s' % (response.status_code, response.reason,
                                                                          request_url))
     except RetryError as e:
-        if ("download/thumbnail" not in request_url):
-            raise e
+        error_print(e)
+        # if ("download/thumbnail" not in request_url):
+        #     raise e
 
 
 def write_2_file(path, content):
