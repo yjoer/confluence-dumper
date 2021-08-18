@@ -485,7 +485,7 @@ def main():
         if r.sismember(exporting_spaces_key, space) or r.sismember(exported_spaces_key, space):
             continue
 
-        space_counter = r.scard(exporting_spaces_key) + r.scard(exported_spaces_key)
+        space_counter = r.scard(exporting_spaces_key) + r.scard(exported_spaces_key) + 1
 
         # Save currently exporting space name
         r.sadd(exporting_spaces_key, space)
