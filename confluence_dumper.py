@@ -27,6 +27,7 @@ from lxml.etree import XMLSyntaxError
 import utils
 import settings
 
+from requests.exceptions import RetryError
 
 CONFLUENCE_DUMPER_VERSION = '1.0.0'
 TITLE_OUTPUT = 'C O N F L U E N C E   D U M P E R  %s' % CONFLUENCE_DUMPER_VERSION
@@ -385,7 +386,9 @@ def fetch_page_recursively(page_id, folder_path, download_folder, html_template,
     except utils.NotFoundException as e:
         error_print(e)
         return None
-
+    except RetryError as e:
+        error_print(e)
+        return None
 
 def create_html_index(index_content):
     """ Creates an HTML index (mainly to navigate through the exported pages).
