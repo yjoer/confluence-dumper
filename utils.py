@@ -13,7 +13,7 @@
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from requests.exceptions import RetryError
+from requests.exceptions import ConnectionError, RetryError
 
 import sys
 import shutil
@@ -118,7 +118,8 @@ def http_download_binary_file(request_url, file_path, auth=None, headers=None, v
         error_print(e)
         # if ("download/thumbnail" not in request_url):
         #     raise e
-
+    except ConnectionError as e:
+        error_print(e)
 
 def write_2_file(path, content):
     """ Writes a string to a file.
