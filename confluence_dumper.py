@@ -447,7 +447,7 @@ def main():
     html_template = template_file.read()
 
     # Fetch all spaces if spaces were not configured via settings
-    cached_spaces_file = "export/cached_spaces.json"
+    cached_spaces_file = "%s/cached_spaces.json" % settings.EXPORT_FOLDER
 
     if len(settings.SPACES_TO_EXPORT) > 0:
         spaces_to_export = settings.SPACES_TO_EXPORT
