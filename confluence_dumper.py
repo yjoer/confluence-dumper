@@ -477,8 +477,8 @@ def main():
     r = redis.Redis(host="127.0.0.1", port=6379, db=0, decode_responses=True)
 
     # Export spaces
-    exporting_spaces_key = "exporting_spaces"
-    exported_spaces_key = "exported_spaces"
+    exporting_spaces_key = "exporting_spaces_2"
+    exported_spaces_key = "exported_spaces_2"
 
     space_counter = 0
     duplicate_space_names = {}

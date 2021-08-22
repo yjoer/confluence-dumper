@@ -139,4 +139,5 @@ ENV/
 .ropeproject
 
 export
+export-pas
 settings.py
